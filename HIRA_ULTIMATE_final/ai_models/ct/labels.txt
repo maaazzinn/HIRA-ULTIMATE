@@ -1,0 +1,4 @@
+0 Normal
+1 Squamous cell carcinoma – left hilum
+2 Adenocarcinoma – left lower lobe
+3 Large cell carcinoma – left hilum

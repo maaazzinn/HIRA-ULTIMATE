@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Report - HIRA Ultimate</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="{{ url_for('patient_dashboard') }}" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </a>
+            <a href="{{ url_for('patient_dashboard') }}" class="back-link">
+                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main style="flex: 1; padding: 40px 0; display: flex; align-items: center;">
+        <div class="container container-narrow">
+            <div class="upload-card">
+                
+                <div class="section-title text-center" style="margin-bottom: 32px;">
+                    <h1 style="font-size: 1.75rem; color: var(--text-dark); margin-bottom: 8px;">Upload Medical Report</h1>
+                    <p style="color: var(--text-medium);">Upload an X-Ray, MRI, CT Scan, or Blood Report for AI analysis.</p>
+                </div>
+
+                <form id="uploadForm" action="{{ url_for('upload_report') }}" method="POST" enctype="multipart/form-data">
+                    <div class="upload-zone" id="dropZone">
+                        <div class="upload-icon">
+                            <i data-lucide="cloud-upload" size="48"></i>
+                        </div>
+                        <p class="upload-text">Drag & drop your file here or <span style="color: var(--primary-green);">browse</span></p>
+                        <p class="upload-hint">Supported formats: JPG, PNG, PDF (Max 20MB)</p>
+                        <input type="file" name="file" id="fileInput" accept=".jpg,.png,.jpeg,.pdf" style="display: none;" required>
+                    </div>
+
+                    <div class="file-preview" id="filePreview" style="display: none;">
+                        <div class="file-info">
+                            <div class="file-icon">
+                                <i data-lucide="file-text"></i>
+                            </div>
+                            <div>
+                                <div class="file-name" id="fileName">report.pdf</div>
+                                <div class="file-size" id="fileSize">2.4 MB</div>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-file" id="removeFileBtn">
+                            <i data-lucide="x" size="16"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reportType" style="display: block; margin-bottom: 8px; font-weight: 500;">Report Type</label>
+                        <select name="reportType" id="reportType" class="form-select" required>
+                            <option value="" disabled selected>Select report type...</option>
+                            <option value="Blood Test">Blood Test (CBC, Lipid, etc.)</option>
+                            <option value="xray">X-Ray (Chest, Bone, etc.)</option>
+                            <option value="mri">MRI Scan</option>
+                            <option value="ct">CT Scan</option>
+                            <option value="breast">Breast Scan</option>
+                            <option value="kidney">Kidney Scan</option>
+                            <option value="oral">Oral Scan</option>
+                            <option value="Prescription">Doctor's Prescription</option>
+                            <option value="Other">Other Medical Record</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-analyze" id="analyzeBtn" disabled>Upload & Analyze</button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark);">Uploading & Analyzing...</div>
+        <p style="font-size: 0.875rem; color: var(--text-medium); margin-top: 4px;">Processing data securely.</p>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const uploadForm = document.getElementById('uploadForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            filePreview.classList.add('active');
+            filePreview.style.display = 'flex';
+            dropZone.style.display = 'none';
+            analyzeBtn.disabled = false;
+        }
+
+        removeFileBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            filePreview.classList.remove('active');
+            filePreview.style.display = 'none';
+            dropZone.style.display = 'block';
+            analyzeBtn.disabled = true;
+        });
+
+        uploadForm.addEventListener('submit', (e) => {
+            // No preventDefault() here to allow standard submission
+            loadingOverlay.classList.add('visible');
+        });
+    </script>
+</body>
+</html>

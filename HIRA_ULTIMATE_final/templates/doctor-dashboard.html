@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - HIRA Ultimate</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </a>
+
+            <div class="user-menu">
+                <div class="user-info">
+                    <span class="user-name">{{ name }}</span>
+                    <span class="user-role">Specialist</span>
+                </div>
+                <div class="avatar">
+                    <i data-lucide="stethoscope"></i>
+                </div>
+                <a href="{{ url_for('logout') }}" style="color: var(--text-light);"><i data-lucide="log-out" style="width: 20px;"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="container">
+            
+            <div style="margin-bottom: 32px;">
+                <h1 style="font-size: 1.875rem; color: var(--text-dark);">Dashboard Overview</h1>
+                <p style="color: var(--text-medium);">Track patient cases, review AI findings, and prioritize urgent care.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Assigned Cases</h3>
+                        <div class="stat-value">{{ total_cases }}</div>
+                    </div>
+                    <div class="stat-icon blue">
+                        <i data-lucide="folder-open"></i>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-color: #fecaca;">
+                    <div class="stat-info">
+                        <h3>Urgent Attention</h3>
+                        <div class="stat-value text-red">{{ urgent_count }}</div>
+                    </div>
+                    <div class="stat-icon red">
+                        <i data-lucide="alert-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Completed Reviews</h3>
+                        <div class="stat-value">{{ completed_count }}</div>
+                    </div>
+                    <div class="stat-icon green">
+                        <i data-lucide="check-square"></i>
+                    </div>
+                </div>
+            </div>
+
+            <section class="urgent-section">
+                <div class="section-header">
+                    <h2 style="font-size: 1.25rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; background-color: var(--accent-red); border-radius: 50%; display: inline-block;"></span> 
+                        Urgent Priority Cases
+                    </h2>
+                    <div style="font-size: 0.875rem; color: var(--text-medium);">Sorted by Severity</div>
+                </div>
+
+                <div class="case-list">
+                    
+                    {% if urgent_cases %}
+                        {% for case in urgent_cases %}
+                        <div class="case-item">
+                            <div style="display: flex; align-items: center; gap: 16px; min-width: 250px;">
+                                <div style="width: 40px; height: 40px; background-color: #f3f4f6; color: var(--text-medium); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem;">
+                                    {{ case['fullname'][:2].upper() }}
+                                </div>
+                                <div>
+                                    <strong style="display: block; color: var(--text-dark); font-size: 0.9375rem;">{{ case['fullname'] }}</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-light);">ID: #P-{{ case['patient_id'] }}</span>
+                                </div>
+                            </div>
+                            <div style="flex: 1; display: flex; gap: 32px; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.75rem; color: var(--text-light);">Report Type</span>
+                                    <span style="font-size: 0.875rem; color: var(--text-dark); font-weight: 500;">{{ case['report_type'] }}</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.75rem; color: var(--text-light);">Date Uploaded</span>
+                                    <span style="font-size: 0.875rem; color: var(--text-dark); font-weight: 500;">{{ case['upload_date'] }}</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.75rem; color: var(--text-light);">Priority</span>
+                                    <span class="badge badge-critical">{{ case['priority_badge'] }}</span>
+                                </div>
+                                <a href="{{ url_for('doctor_case', report_id=case['id']) }}" class="btn btn-sm btn-primary-sm">
+                                    Open Case <i data-lucide="arrow-right" size="14"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="padding: 40px; text-align: center; color: var(--text-medium);">
+                            <i data-lucide="check-circle" style="width: 48px; height: 48px; margin-bottom: 16px; color: green;"></i>
+                            <p>No critical cases pending. Great job!</p>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

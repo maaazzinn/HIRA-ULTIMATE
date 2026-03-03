@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIRA Ultimate - AI-Powered Medical Report Analysis</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </a>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#features">Features</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="{{ url_for('login') }}" class="btn btn-link">Sign In</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero-section">
+            <div class="container hero-content">
+                <span class="badge">Academic Healthcare AI Project</span>
+                
+                <h1 class="hero-title">
+                    AI-Powered Medical<br>
+                    <span class="highlight-green">Report Analysis</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    HIRA Ultimate assists healthcare professionals by analyzing X-rays, CT scans, MRIs, and blood tests. AI provides insights — doctors make decisions.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Get Started <i data-lucide="arrow-right" class="btn-icon-right"></i></a>
+                    <a href="#features" class="btn btn-outline btn-lg">Learn More</a>
+                </div>
+
+                <div class="hero-pillars">
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i data-lucide="brain-circuit"></i></div>
+                        <div class="pillar-text">
+                            <strong>AI Analysis</strong>
+                            <span>Smart pattern detection</span>
+                        </div>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i data-lucide="stethoscope"></i></div>
+                        <div class="pillar-text">
+                            <strong>Doctor First</strong>
+                            <span>AI assists, never diagnoses</span>
+                        </div>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i data-lucide="shield-check"></i></div>
+                        <div class="pillar-text">
+                            <strong>Ethical AI</strong>
+                            <span>Transparent & explainable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Comprehensive Medical AI Features</h2>
+                    <p>Designed to assist healthcare professionals with intelligent analysis while maintaining ethical boundaries and transparency.</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="card-icon theme-green"><i data-lucide="file-text"></i></div>
+                        <h3>Multi-Modal Analysis</h3>
+                        <p>Support for X-rays, CT scans, MRI images, and blood test reports with specialized AI models.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="card-icon theme-teal"><i data-lucide="history"></i></div>
+                        <h3>Patient History Comparison</h3>
+                        <p>AI compares current results with previous reports to detect patterns and changes over time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="card-icon theme-red"><i data-lucide="alert-triangle"></i></div>
+                        <h3>Severity Classification</h3>
+                        <p>Automatic flagging of findings as Critical, Moderate, or Normal with confidence scores.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="card-icon theme-green"><i data-lucide="file-output"></i></div>
+                        <h3>AI-Generated Reports</h3>
+                        <p>Clear, human-readable summaries with findings, confidence levels, and disclaimers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="card-icon theme-orange"><i data-lucide="users"></i></div>
+                        <h3>Role-Based Access</h3>
+                        <p>Separate dashboards for patients and doctors with appropriate permissions and views.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="card-icon theme-teal"><i data-lucide="message-square-lock"></i></div>
+                        <h3>Secure Messaging</h3>
+                        <p>Direct communication between patients and doctors for follow-ups and clarifications.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="ethics-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="badge badge-orange"><i data-lucide="info"></i> Ethics & Transparency</span>
+                    <h2>Responsible AI in Healthcare</h2>
+                    <p>HIRA is built with ethical principles at its core. We believe in transparent, explainable AI that empowers—never replaces—healthcare professionals.</p>
+                </div>
+
+                <div class="ethics-comparison">
+                    <div class="ethics-card do">
+                        <div class="card-header">
+                            <i data-lucide="check-circle-2" class="icon-do" style="color: var(--primary-green);"></i> <h3>What AI Does</h3>
+                        </div>
+                        <ul>
+                            <li><i data-lucide="check" class="list-icon-do" style="color: var(--primary-green);"></i> Flags potential findings for doctor review</li>
+                            <li><i data-lucide="check" class="list-icon-do" style="color: var(--primary-green);"></i> Compares with patient history for context</li>
+                            <li><i data-lucide="check" class="list-icon-do" style="color: var(--primary-green);"></i> Provides confidence scores and explanations</li>
+                            <li><i data-lucide="check" class="list-icon-do" style="color: var(--primary-green);"></i> Generates clear, readable summaries</li>
+                            <li><i data-lucide="check" class="list-icon-do" style="color: var(--primary-green);"></i> Helps prioritize urgent cases</li>
+                        </ul>
+                    </div>
+                    <div class="ethics-card dont">
+                        <div class="card-header">
+                            <i data-lucide="x-circle" class="icon-dont" style="color: var(--accent-red);"></i> <h3>What AI Does NOT Do</h3>
+                        </div>
+                        <ul>
+                            <li><i data-lucide="x" class="list-icon-dont" style="color: var(--accent-red);"></i> Provide medical diagnoses</li>
+                            <li><i data-lucide="x" class="list-icon-dont" style="color: var(--accent-red);"></i> Replace doctor's clinical judgment</li>
+                            <li><i data-lucide="x" class="list-icon-dont" style="color: var(--accent-red);"></i> Make treatment decisions</li>
+                            <li><i data-lucide="x" class="list-icon-dont" style="color: var(--accent-red);"></i> Guarantee accuracy or completeness</li>
+                            <li><i data-lucide="x" class="list-icon-dont" style="color: var(--accent-red);"></i> Serve as a substitute for medical consultation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="disclaimer-box">
+                    <i data-lucide="alert-circle" class="disclaimer-icon"></i>
+                    <div>
+                        <strong>Academic Project Disclaimer</strong>
+                        <p>HIRA Ultimate is an academic demonstration project designed for educational purposes. It is <strong>NOT intended for clinical use.</strong> All AI outputs are suggestions only and must be reviewed by qualified healthcare professionals. AI models may have biases and produce false positives or negatives. The system should never be used as the sole basis for medical decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>How HIRA Works</h2>
+                    <p>A streamlined workflow that keeps doctors in control while leveraging AI for intelligent assistance.</p>
+                </div>
+
+                <div class="workflow-steps">
+                    <div class="step-item">
+                        <div class="step-icon-wrapper">
+                            <i data-lucide="upload-cloud"></i>
+                        </div>
+                        <h3>Upload Report</h3>
+                        <p>Patient uploads medical report (X-ray, CT, MRI, or blood test)</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon-wrapper">
+                            <i data-lucide="cpu"></i>
+                        </div>
+                        <h3>AI Analysis</h3>
+                        <p>System detects modality and applies appropriate AI model</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon-wrapper">
+                            <i data-lucide="git-compare"></i>
+                        </div>
+                        <h3>History Compare</h3>
+                        <p>AI compares with patient's previous reports for context</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon-wrapper">
+                            <i data-lucide="file-check-2"></i>
+                        </div>
+                        <h3>Generate Report</h3>
+                        <p>AI creates summary with severity, confidence, and disclaimers</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon-wrapper">
+                            <i data-lucide="user-check"></i>
+                        </div>
+                        <h3>Doctor Review</h3>
+                        <p>Doctor reviews AI findings and makes final clinical decision</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container text-center">
+                <h2>Ready to Explore AI-Assisted Healthcare?</h2>
+                <p>Experience how AI can assist medical professionals in analyzing reports while maintaining ethical boundaries and transparency.</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('register') }}" class="btn btn-white"><i data-lucide="user-plus" class="btn-icon-left"></i> Create Account</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-transparent-white">Sign In <i data-lucide="arrow-right" class="btn-icon-right"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand-col">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="activity"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span class="brand">HIRA</span>
+                        <span class="edition">ULTIMATE</span>
+                    </div>
+                </a>
+                <p class="footer-description" style="margin: 24px 0; max-width: 400px; font-size: 0.9375rem;">Health Intelligent Result Analyser — An AI-powered academic project demonstrating how technology can assist healthcare professionals.</p>
+                
+                <div class="footer-disclaimer" style="display: flex; gap: 12px; background-color: var(--bg-off-white); padding: 16px; border-radius: 8px; border: 1px solid var(--border-light); max-width: 450px;">
+                    <i data-lucide="alert-triangle" class="footer-alert-icon" style="color: var(--accent-orange);"></i>
+                    <div>
+                        <strong style="font-size: 0.875rem; color: var(--text-dark); display: block; margin-bottom: 4px;">Academic Project Notice</strong>
+                        <p style="font-size: 0.75rem; color: var(--text-medium);">This is a demonstration project for educational purposes only. Not intended for clinical use. AI provides suggestions, not diagnoses.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('index') }}#home">Home</a></li>
+                    <li><a href="{{ url_for('index') }}#about">About</a></li>
+                    <li><a href="{{ url_for('index') }}#features">Features</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Ethics & Limitations</a></li>
+                    <li><a href="#">Architecture</a></li>
+                    <li><a href="#">Demo Cases</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        const headerHeight = document.querySelector('.site-header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        document.querySelectorAll('.main-nav a').forEach(link => link.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        lucide.createIcons();
+    </script>
+</body>
+</html>

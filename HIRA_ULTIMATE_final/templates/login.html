@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - HIRA Ultimate</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo" style="justify-content: center;">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </div>
+            <p class="tagline" style="margin-top: 10px;">Sign in to access your medical reports</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div style="background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-size: 0.9rem;">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form class="login-form" id="loginForm" action="{{ url_for('login') }}" method="POST">
+            <div class="form-group">
+                <label for="email" class="form-label">Email or Phone</label>
+                <div class="input-wrapper">
+                    <i data-lucide="user" class="input-icon"></i>
+                    <input type="text" id="email" name="email" class="form-input" placeholder="name@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-wrapper">
+                    <i data-lucide="lock" class="input-icon"></i>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <a href="#" class="forgot-password">Forgot password?</a>
+
+            <button type="submit" class="btn-submit">
+                Sign In <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+            </button>
+        </form>
+
+        <div class="card-footer">
+            <p>New user? <a href="{{ url_for('register') }}">Create an account</a></p>
+            <a href="{{ url_for('index') }}" class="back-link" style="justify-content: center; margin-top: 12px;">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        // JavaScript submission handler removed to allow standard POST submission
+    </script>
+</body>
+</html>

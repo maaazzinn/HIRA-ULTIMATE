@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - HIRA Ultimate</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+        .text-green { color: #10b981; }
+        .text-blue { color: #3b82f6; }
+        .text-orange { color: #f59e0b; }
+        .text-red { color: #ef4444; }
+        .text-gray { color: #6b7280; }
+
+        .bg-icon-green { background-color: #d1fae5; color: #10b981; }
+        .bg-icon-blue { background-color: #dbeafe; color: #3b82f6; }
+        .bg-icon-orange { background-color: #fef3c7; color: #f59e0b; }
+        .bg-icon-red { background-color: #fee2e2; color: #ef4444; }
+        .bg-icon-gray { background-color: #f3f4f6; color: #9ca3af; }
+
+        .badge-critical { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-moderate { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-normal { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* New styles for Gemini Summary Box */
+        .ai-summary-box {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            border-radius: 4px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </a>
+
+            <div class="user-menu">
+                <div class="user-info">
+                    <span class="user-name">{{ name }}</span>
+                    <span class="user-role">Patient ID: #{{ user_id }}</span>
+                </div>
+                <div class="avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <a href="{{ url_for('logout') }}" style="color: var(--text-light); margin-left: 10px;" title="Logout">
+                    <i data-lucide="log-out" style="width: 20px;"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="container">
+            
+            {% if health_status == 'Action Required' %}
+            <div class="urgent-banner" style="background-color: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: 16px; border-radius: 8px; display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-start;">
+                <i data-lucide="alert-octagon" style="flex-shrink: 0;"></i>
+                <div>
+                    <strong style="display: block; margin-bottom: 4px;">AI Flagged: Potential Urgent Finding</strong>
+                    <p style="margin: 0; font-size: 0.9375rem; opacity: 0.9;">Analysis of your recent documents indicates patterns that may require attention. Please consult your doctor.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="dashboard-header-row">
+                <div class="welcome-text">
+                    <h1 style="font-size: 1.875rem; color: var(--text-dark); margin-bottom: 4px;">Welcome back, {{ name.split(' ')[0] }}</h1>
+                    <p style="color: var(--text-medium);">Here is an overview of your medical report history.</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                     <a href="{{ url_for('messages') }}" class="btn btn-outline">
+                        <i data-lucide="message-square"></i> Messages
+                    </a>
+                    <a href="{{ url_for('upload_report') }}" class="btn btn-primary">
+                        <i data-lucide="upload-cloud"></i> Upload New Report
+                    </a>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Reports</h3>
+                        <div class="stat-value">{{ total_reports }}</div>
+                        <span style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px;">All time uploads</span>
+                    </div>
+                    <div class="stat-icon green">
+                        <i data-lucide="file-stack"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Last Analysis</h3>
+                        <div class="stat-value" style="font-size: 1.25rem;">{{ last_analysis }}</div>
+                        <span style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px;">Most recent upload</span>
+                    </div>
+                    <div class="stat-icon blue">
+                        <i data-lucide="clock"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Health Status</h3>
+                        <div class="stat-value text-{{ status_color }}" style="font-size: 1.5rem;">
+                            {{ health_status }}
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px;">AI Assessment</span>
+                    </div>
+                    <div class="stat-icon bg-icon-{{ status_color }}">
+                        <i data-lucide="activity"></i>
+                    </div>
+                </div>
+            </div>
+
+            <section class="timeline-section">
+                <div class="timeline-header">
+                    <h2 style="font-size: 1.25rem; color: var(--text-dark);">Recent Uploads & Analysis</h2>
+                    <a href="#" class="btn btn-sm btn-outline" style="border-color: var(--border-light); color: var(--text-medium);">View All History</a>
+                </div>
+
+                <div class="timeline-list">
+                    
+                    {% if reports %}
+                        {% for report in reports %}
+                        <div class="timeline-item" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <div style="width: 48px; height: 48px; background: white; border: 1px solid var(--border-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-medium); flex-shrink: 0;">
+                                    {% if 'xray' in report['report_type'].lower() %}
+                                        <i data-lucide="image"></i>
+                                    {% elif 'blood' in report['report_type'].lower() %}
+                                        <i data-lucide="file-text"></i>
+                                    {% else %}
+                                        <i data-lucide="scan"></i>
+                                    {% endif %}
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                        <div>
+                                            <h4 style="font-size: 1rem; color: var(--text-dark); font-weight: 600; margin: 0;">{{ report['report_type'] }}</h4>
+                                            <span style="font-size: 0.875rem; color: var(--text-light);">Uploaded: {{ report['upload_date'] }} • {{ report['file_size'] }}</span>
+                                        </div>
+                                        
+                                        <div style="display: flex; gap: 8px; align-items: center;">
+                                            {% if report['status'] == 'Critical' %}
+                                                <div class="badge-critical"><i data-lucide="alert-circle" size="14"></i> Critical</div>
+                                            {% elif report['status'] == 'Moderate' %}
+                                                <div class="badge-moderate"><i data-lucide="alert-triangle" size="14"></i> Moderate</div>
+                                            {% else %}
+                                                <div class="badge-normal"><i data-lucide="check-circle" size="14"></i> Normal</div>
+                                            {% endif %}
+                                            <a href="{{ url_for('patient_case', report_id=report['id']) }}" class="btn btn-sm btn-outline" style="padding: 4px 10px;">View Report</a>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if report['notes'] %}
+                                    <span style="font-size: 0.8rem; color: var(--text-medium); display: block; margin-top: 4px; font-style: italic;">"{{ report['notes'] }}"</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if report['summary'] and report['summary'] != 'N/A' %}
+                            <div class="ai-summary-box">
+                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #1e40af;">
+                                    <i data-lucide="sparkles" size="14"></i>
+                                    <strong style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.025em;">AI Clinical Insight</strong>
+                                </div>
+                                <p style="font-size: 0.875rem; color: #1e293b; line-height: 1.5; margin: 0;">
+                                    {{ report['summary'] }}
+                                </p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="padding: 40px; text-align: center; color: var(--text-medium);">
+                            <i data-lucide="file-plus" style="width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No reports found. Upload a new report to get started.</p>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

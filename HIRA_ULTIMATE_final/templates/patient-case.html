@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Analysis - HIRA Ultimate</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .confidence-track {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f97316 0%, #ef4444 100%);
+        }
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .priority-critical { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .priority-high { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .priority-moderate { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+        .priority-low { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .viewer-box {
+            width: 100%;
+            min-height: 360px;
+            background: #111827;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .viewer-box img {
+            width: 100%;
+            max-height: 520px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="{{ url_for('patient_dashboard') }}" class="logo">
+                <div class="logo-icon"><i data-lucide="activity"></i></div>
+                <div class="logo-text">
+                    <span class="brand">HIRA</span>
+                    <span class="edition">ULTIMATE</span>
+                </div>
+            </a>
+            <a href="{{ url_for('patient_dashboard') }}" class="back-link">
+                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="case-layout">
+            <section class="report-viewer-card">
+                <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight: 600; color: var(--text-dark);">Report Preview</span>
+                    <a href="{{ case_image_url }}" target="_blank" class="btn btn-outline" style="font-size: 0.8rem;">
+                        <i data-lucide="external-link"></i> Open Original
+                    </a>
+                </div>
+                <div class="viewer-box">
+                    {% if case_is_pdf %}
+                    <iframe src="{{ case_image_url }}" title="Report PDF" style="width:100%; height:520px; border:0;"></iframe>
+                    {% else %}
+                    <img src="{{ case_image_url }}" alt="Uploaded report">
+                    {% endif %}
+                </div>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="analysis-card" style="padding: 24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 14px;">
+                        <div>
+                            <h1 style="font-size: 1.4rem; margin: 0 0 8px 0;">{{ case_data['report_type'] }}</h1>
+                            <div style="display:flex; gap:14px; color:var(--text-light); font-size:0.85rem;">
+                                <span><i data-lucide="calendar" size="14"></i> {{ case_data['upload_date'] }}</span>
+                                <span><i data-lucide="file" size="14"></i> ID: #{{ case_data['id'] }}</span>
+                            </div>
+                        </div>
+                        {% if doctor_reviewed %}
+                            {% set p = (priority_badge or 'Low')|lower %}
+                            <span class="priority-badge priority-{{ p }}">
+                                <i data-lucide="alert-circle" size="14"></i> {{ priority_badge }}
+                            </span>
+                        {% else %}
+                            <span class="priority-badge priority-moderate">
+                                <i data-lucide="clock-3" size="14"></i> Under Review
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="ai-summary-box" style="margin-bottom: 14px;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--primary-green); display: block; margin-bottom: 8px;">Case Status</span>
+                        <p style="margin: 0;">{{ case_status_label }}</p>
+                    </div>
+
+                    {% if doctor_reviewed %}
+                    <div style="margin-bottom: 16px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <strong>AI Confidence</strong>
+                            <strong>{{ confidence_percent }}%</strong>
+                        </div>
+                        <div class="confidence-track">
+                            <div class="confidence-fill" style="width: {{ confidence_width }};"></div>
+                        </div>
+                    </div>
+
+                    <div class="ai-summary-box" style="margin-bottom: 14px;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--primary-green); display: block; margin-bottom: 8px;">Prediction</span>
+                        <p style="margin: 0;"><strong>Condition:</strong> {{ predicted_condition }}</p>
+                        <p style="margin: 6px 0 0 0;"><strong>Risk Score:</strong> {{ risk_score }}/10</p>
+                    </div>
+
+                    {% if case_is_blood and blood_markers %}
+                    <div class="ai-summary-box" style="margin-bottom: 14px;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--primary-green); display: block; margin-bottom: 8px;">Blood Marker Analysis</span>
+                        <table style="width:100%; border-collapse: collapse; font-size: 0.84rem;">
+                            <thead>
+                                <tr style="text-align:left; border-bottom:1px solid var(--border-light);">
+                                    <th style="padding: 6px 4px;">Marker</th>
+                                    <th style="padding: 6px 4px;">Value</th>
+                                    <th style="padding: 6px 4px;">Range</th>
+                                    <th style="padding: 6px 4px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for marker in blood_markers %}
+                                <tr style="border-bottom:1px solid #f1f5f9;">
+                                    <td style="padding: 6px 4px;">{{ marker.name }}</td>
+                                    <td style="padding: 6px 4px;">{{ marker.value }} {{ marker.unit }}</td>
+                                    <td style="padding: 6px 4px;">{{ marker.reference_range }}</td>
+                                    <td style="padding: 6px 4px; font-weight: 700; color: {% if marker.status == 'HIGH' %}#b91c1c{% elif marker.status == 'LOW' %}#9a3412{% else %}#166534{% endif %};">
+                                        {{ marker.status }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if blood_abnormal_findings %}
+                        <p style="margin-top: 8px; color: #9a3412;"><strong>Key abnormalities:</strong> {{ blood_abnormal_findings | join(', ') }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="disclaimer-box" style="margin-bottom: 14px;">
+                        <i data-lucide="shield" style="color: #1d4ed8; flex-shrink: 0; margin-top: 2px;"></i>
+                        <div style="font-size: 0.875rem; color: #1e3a8a;">
+                            <strong style="display:block; margin-bottom: 2px;">Awaiting Doctor Approval</strong>
+                            AI prediction details are hidden until your doctor reviews and approves this case.
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="ai-summary-box" style="margin-bottom: 14px;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--primary-green); display: block; margin-bottom: 8px;">
+                            {{ 'Final AI + Doctor Conclusion' if doctor_reviewed else 'Review Status' }}
+                        </span>
+                        <p style="margin: 0; line-height: 1.6;">{{ final_summary }}</p>
+                    </div>
+
+                    {% if patient_note %}
+                    <div class="disclaimer-box" style="margin-bottom: 14px;">
+                        <i data-lucide="info" style="color: #2563eb; flex-shrink: 0; margin-top: 2px;"></i>
+                        <div style="font-size: 0.875rem; color: #1e3a8a;">
+                            <strong style="display:block; margin-bottom: 2px;">Doctor Update</strong>
+                            {{ patient_note }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="disclaimer-box">
+                        <i data-lucide="alert-triangle" style="color: var(--accent-orange); flex-shrink: 0; margin-top: 2px;"></i>
+                        <div style="font-size: 0.875rem; color: #9a3412;">
+                            <strong style="display:block; margin-bottom: 2px;">Clinical Disclaimer</strong>
+                            AI outputs are supportive insights and must be interpreted by qualified clinicians.
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top: 16px;">
+                        <a href="{{ url_for('messages') }}" class="btn btn-primary" style="flex: 1;">
+                            <i data-lucide="message-square"></i> Message Doctor
+                        </a>
+                        <a href="{{ case_image_url }}" target="_blank" class="btn btn-outline" style="flex: 1; border-color: var(--border-light); color: var(--text-dark);">
+                            <i data-lucide="download"></i> Open Report File
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
